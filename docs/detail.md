@@ -90,3 +90,22 @@ docker push myregistry:5000/istio/proxyv2:1.18.02
 使得使用myregistry:5000作为默认的registry-mirror，所以会从myregistry:5000拉取istio/proxyv2的镜像。
 过一会儿发现pod是running了，crictl images也发现了docker.io/istio/proxyv2这个镜像
 
+
+### 调整vagrant vm时间
+sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+### 让bridge调用iptables
+```
+$ cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+br_netfilter
+EOF
+
+sudo modprobe br_netfilter
+
+$ cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+$ sudo sysctl --system
+·
+```
